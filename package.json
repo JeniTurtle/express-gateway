@@ -1,0 +1,24 @@
+{
+  "name": "gatewaygateway",
+  "description": "Express Gateway Instance Bootstraped from Command Line",
+  "repository": {},
+  "license": "UNLICENSED",
+  "version": "1.0.0",
+  "main": "server.js",
+  "dependencies": {
+    "continuation-local-storage": "^3.2.1",
+    "dotenv": "^8.0.0",
+    "express-gateway": "^1.11.0",
+    "winston": "^3.2.1"
+  },
+  "scripts": {
+    "start": "LOG_LEVEL=debug && NODE_ENV=LOCAL && npm run server",
+    "start-qa": "NODE_ENV=QA && npm run server",
+    "start-prod": "NODE_ENV=PROD && npm run server",
+    "server": "node server.js",
+    "lint": "standard --fix"
+  },
+  "devDependencies": {
+    "standard": "^11.0.1"
+  }
+}

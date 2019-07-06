@@ -1,0 +1,69 @@
+http:
+  host: ${NODE_GATEWAY_HOST}
+  port: ${NODE_GATEWAY_PORT}
+admin:
+  hostname: ${NODE_GATEWAY_ADMIN_HOST}
+  port: ${NODE_GATEWAY_ADMIN_PORT}
+apiEndpoints:
+  client:
+    host: ${NODE_GATEWAY_API_CLIENT_HOST}
+    paths: ${NODE_GATEWAY_API_CLIENT_PATHS}
+  edu:
+    host: ${NODE_GATEWAY_API_EDU_HOST}
+    paths: ${NODE_GATEWAY_API_EDU_PATHS}
+  resource:
+    host: ${NODE_GATEWAY_API_RESOURCE_HOST}
+    paths: ${NODE_GATEWAY_API_RESOURCE_PATHS}
+serviceEndpoints:
+  client:
+    url: ${NODE_GATEWAY_SERVICE_CLIENT_URL}
+  edu:
+    url: ${NODE_GATEWAY_SERVICE_EDU_URL}
+  resource:
+    url: ${NODE_GATEWAY_SERVICE_RESOURCE_URL}
+policies:
+  - log
+  - oauth2
+  - proxy
+  - rate-limit
+  - file-log
+pipelines:
+  client:
+    apiEndpoints:
+      - client
+    policies:
+      - rate-limit: &rate-limit
+        - action:
+          max: 1
+          windowMs: 120000
+          rateLimitBy: "${req.hostname}"
+      - file-log:
+      - log: &log
+          - action:
+              message: ${req.method} ${req.originalUrl}
+      - proxy:
+          - action:
+              serviceEndpoint: client
+              changeOrigin: true
+  edu:
+    apiEndpoints:
+      - edu
+    policies:
+      - rate-limit: *rate-limit
+      - file-log:
+      - log: *log
+      - proxy:
+        - action:
+            serviceEndpoint: edu
+            changeOrigin: true
+  resource:
+    apiEndpoints:
+      - resource
+    policies:
+      - rate-limit: *rate-limit
+      - log: *log
+      - file-log:
+      - proxy:
+          - action:
+              serviceEndpoint: resource
+              changeOrigin: true

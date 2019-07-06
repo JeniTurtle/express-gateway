@@ -1,0 +1,15 @@
+# Core
+db:
+  redis:
+    emulate: false
+    namespace: EG
+    host: '10.0.0.95'
+    port: '6379'
+    password: ''
+
+plugins:
+#  example:
+#    package: ./plugins/example
+  file-log:
+    package: ./plugins/logger
+    log-dir: ${ROOT_DIR}/logs
